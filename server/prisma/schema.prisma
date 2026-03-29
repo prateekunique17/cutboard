@@ -1,0 +1,111 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(uuid())
+  email         String    @unique
+  passwordHash  String
+  name          String
+  role          String    @default("EDITOR") // ADMIN, EDITOR, REVIEWER, CLIENT
+  projects      Project[]
+  comments      Comment[]
+  reactions     Reaction[]
+  createdAt     DateTime  @default(now())
+}
+
+model Project {
+  id            String       @id @default(uuid())
+  title         String
+  description   String?
+  status        String       @default("ACTIVE")
+  ownerId       String
+  owner         User         @relation(fields: [ownerId], references: [id])
+  cards         Card[]
+  shareTokens   ShareToken[]
+  createdAt     DateTime     @default(now())
+}
+
+model Card {
+  id            String         @id @default(uuid())
+  projectId     String
+  project       Project        @relation(fields: [projectId], references: [id])
+  title         String
+  status        String         // e.g., "RAW_FOOTAGE", "IN_REVIEW", "APPROVED"
+  order         Int
+  assigneeId    String?
+  videos        VideoVersion[]
+  createdAt     DateTime       @default(now())
+}
+
+model VideoVersion {
+  id            String             @id @default(uuid())
+  cardId        String
+  card          Card               @relation(fields: [cardId], references: [id])
+  versionNum    Int                @default(1)
+  originalName  String
+  videoUrl      String
+  thumbnailUrl  String?
+  duration      Float?
+  comments      Comment[]
+  markers       Marker[]
+  reactions     Reaction[]
+  aiBriefCheck  BriefCheckResult?
+  createdAt     DateTime           @default(now())
+}
+
+model Comment {
+  id            String        @id @default(uuid())
+  videoId       String
+  video         VideoVersion  @relation(fields: [videoId], references: [id])
+  userId        String?
+  user          User?         @relation(fields: [userId], references: [id])
+  content       String
+  timestamp     Float         // Seconds into video
+  createdAt     DateTime      @default(now())
+}
+
+model Marker {
+  id            String        @id @default(uuid())
+  videoId       String
+  video         VideoVersion  @relation(fields: [videoId], references: [id])
+  type          String        // CUT, BROLL, MUSIC, SILENCE
+  content       String?
+  timestamp     Float
+  createdAt     DateTime      @default(now())
+}
+
+model Reaction {
+  id            String        @id @default(uuid())
+  videoId       String
+  video         VideoVersion  @relation(fields: [videoId], references: [id])
+  userId        String?
+  user          User?         @relation(fields: [userId], references: [id])
+  emoji         String        // ❤️, 😮, 🔥
+  timestamp     Float
+  createdAt     DateTime      @default(now())
+}
+
+model BriefCheckResult {
+  id            String        @id @default(uuid())
+  videoId       String        @unique
+  video         VideoVersion  @relation(fields: [videoId], references: [id])
+  briefText     String
+  resultsJson   String        // Structured PASS/FAIL results
+  createdAt     DateTime      @default(now())
+}
+
+model ShareToken {
+  id            String        @id @default(uuid())
+  projectId     String
+  project       Project       @relation(fields: [projectId], references: [id])
+  token         String        @unique
+  permissions   String        // e.g., "VIEW", "COMMENT"
+  expiresAt     DateTime?
+  createdAt     DateTime      @default(now())
+}
