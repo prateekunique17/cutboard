@@ -13,7 +13,7 @@ export default function VideoLibrary() {
   useEffect(() => {
     const fetchVideos = async () => {
       try {
-        const res  = await fetch('http://localhost:5000/api/videos');
+        const res  = await fetch('cutboard-production.up.railway.app/api/videos');
         if (res.ok) {
           const data = await res.json();
           setVideos([...(data.active || []), ...(data.done || [])]);
@@ -31,7 +31,7 @@ export default function VideoLibrary() {
     e.stopPropagation();
     if (!window.confirm('Delete this video? This cannot be undone.')) return;
     try {
-      const res = await fetch(`http://localhost:5000/api/videos/${id}`, { method: 'DELETE' });
+      const res = await fetch(`cutboard-production.up.railway.app/api/videos/${id}`, { method: 'DELETE' });
       if (res.ok) setVideos((prev) => prev.filter((v) => v.id !== id));
     } catch (err) {
       console.error('Delete failed:', err);

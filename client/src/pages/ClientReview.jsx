@@ -4,7 +4,7 @@ import { Play, Pause, Volume2, Maximize2, MessageSquare, Send, Loader2, Brain, C
 import { io } from 'socket.io-client';
 import { supabase } from '../supabase';
 
-const socket = io('http://localhost:5000'); 
+const socket = io('cutboard-production.up.railway.app'); 
 
 export default function ClientReview() {
   const { id: videoId } = useParams();

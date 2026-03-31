@@ -35,7 +35,7 @@ export default function Projects() {
     if (!silent) setLoading(true);
     else setRefreshing(true);
     try {
-      const response = await fetch('http://localhost:5000/api/videos');
+      const response = await fetch('cutboard-production.up.railway.app/api/videos');
       if (response.ok) {
         const data = await response.json();
         const map = (arr) =>
@@ -120,7 +120,7 @@ export default function Projects() {
     } else {
       try {
         const activeItem = items[ac].find((i) => i.id === active.id);
-        const res = await fetch('http://localhost:5000/api/videos/status', {
+        const res = await fetch('cutboard-production.up.railway.app/api/videos/status', {
           method:  'PATCH',
           headers: { 'Content-Type': 'application/json' },
           body:    JSON.stringify({ cardId: activeItem.cardId, status: oc }),

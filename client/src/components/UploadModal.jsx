@@ -42,7 +42,7 @@ export default function UploadModal({ isOpen, onClose, onUploadSuccess }) {
     const formData = new FormData();
     formData.append('video', file);
     try {
-      const res = await fetch('http://localhost:5000/api/videos/upload', {
+      const res = await fetch('cutboard-production.up.railway.app/api/videos/upload', {
         method: 'POST',
         body: formData,
       });

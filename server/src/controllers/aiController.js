@@ -18,7 +18,7 @@ export const auditVideo = async (req, res) => {
     }
 
     // 2. Extract filename from URL (since we store it locally in /uploads)
-    // URL format: http://localhost:5000/uploads/filename.mp4
+    // URL format: cutboard-production.up.railway.app/uploads/filename.mp4
     const filename = video.videourl.split('/').pop();
     const videoPath = path.join(process.cwd(), 'uploads', filename);
 

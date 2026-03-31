@@ -12,7 +12,7 @@ export default function Dashboard() {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const res = await fetch('http://localhost:5000/api/videos/stats');
+        const res = await fetch('cutboard-production.up.railway.app/api/videos/stats');
         if (res.ok) {
           const data = await res.json();
           setStats(data);
