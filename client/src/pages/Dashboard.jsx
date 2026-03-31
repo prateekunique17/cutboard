@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Video, Settings2, Users, MessageSquare, CheckCircle, Loader2 } from 'lucide-react';
 import { useAuthStore } from '../store/useAuthStore';
+import { API_URL } from '../config';
 
 export default function Dashboard() {
   const { user } = useAuthStore();
@@ -12,7 +13,7 @@ export default function Dashboard() {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const res = await fetch('cutboard-production.up.railway.app/api/videos/stats');
+        const res = await fetch(`${API_URL}/api/videos/stats`);
         if (res.ok) {
           const data = await res.json();
           setStats(data);

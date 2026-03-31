@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
 import path from 'path';
 import authRoutes from './routes/auth.js';
@@ -23,6 +24,17 @@ app.use('/api/ai', aiRoutes);
 
 app.get('/api/health', (req, res) => {
   res.status(200).json({ status: 'ok', message: 'CutBoard API is running' });
+});
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Serve frontend in production or if build exists
+const clientDistPath = path.resolve(__dirname, '../../client/dist');
+app.use(express.static(clientDistPath));
+
+app.get(/.*/, (req, res) => {
+  res.sendFile(path.resolve(clientDistPath, 'index.html'));
 });
 
 export default app;

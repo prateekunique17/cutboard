@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { X, Upload, Film, CheckCircle2, AlertCircle, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { API_URL } from '../config';
 
 export default function UploadModal({ isOpen, onClose, onUploadSuccess }) {
   const [file, setFile] = useState(null);
@@ -43,7 +44,7 @@ export default function UploadModal({ isOpen, onClose, onUploadSuccess }) {
     const formData = new FormData();
     formData.append('video', file);
     try {
-      const res = await fetch('cutboard-production.up.railway.app/api/videos/upload', {
+      const res = await fetch(`${API_URL}/api/videos/upload`, {
         method: 'POST',
         body: formData,
       });

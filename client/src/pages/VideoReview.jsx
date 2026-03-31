@@ -2,8 +2,9 @@ import { useState, useRef, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Play, Pause, Volume2, Volume1, VolumeX, Maximize2, MessageSquare, Scissors, Smile, Download, ArrowLeft, Loader2, X, Brain, CheckCircle, AlertTriangle, AlertCircle, Share2, Copy } from 'lucide-react';
 import { io } from 'socket.io-client';
+import { API_URL, SOCKET_URL } from '../config';
 
-const socket = io('cutboard-production.up.railway.app'); 
+const socket = io(SOCKET_URL); 
 
 export default function VideoReview() {
   const { id: videoId } = useParams();
@@ -34,7 +35,7 @@ export default function VideoReview() {
   useEffect(() => {
     const fetchVideoDetails = async () => {
       try {
-        const response = await fetch(`cutboard-production.up.railway.app/api/videos`);
+        const response = await fetch(`${API_URL}/api/videos`);
         if (response.ok) {
           const data = await response.json();
           const allVideos = [...(data.active || []), ...(data.done || [])];
@@ -44,14 +45,14 @@ export default function VideoReview() {
             setDuration(prev => prev || found.duration || 0);
 
             // Fetch markers (AI)
-            const mRes = await fetch(`cutboard-production.up.railway.app/api/videos/${videoId}/markers`);
+            const mRes = await fetch(`${API_URL}/api/videos/${videoId}/markers`);
             if (mRes.ok) {
               const mData = await mRes.json();
               setMarkers(mData);
             }
 
             // Fetch user comments/cuts
-            const cRes = await fetch(`cutboard-production.up.railway.app/api/videos/${videoId}/comments`);
+            const cRes = await fetch(`${API_URL}/api/videos/${videoId}/comments`);
             if (cRes.ok) {
               const cData = await cRes.json();
               setComments(cData.map(c => ({
@@ -94,7 +95,7 @@ export default function VideoReview() {
     if (!brief.trim()) return;
     setScanning(true);
     try {
-      const res = await fetch('cutboard-production.up.railway.app/api/ai/scan', {
+      const res = await fetch(`${API_URL}/api/ai/scan`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ videoId, brief })
@@ -210,7 +211,7 @@ export default function VideoReview() {
   const handleApprove = async () => {
     if (!window.confirm("Approve this project? This will move it to the Finished column.")) return;
     try {
-      const res = await fetch('cutboard-production.up.railway.app/api/videos/status', {
+      const res = await fetch(`${API_URL}/api/videos/status`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ cardId: videoData.cardId, status: 'done' })
