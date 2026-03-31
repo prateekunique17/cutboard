@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Search, Play, Clock, Loader2, Trash2, LayoutGrid, List } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import { API_URL } from '../config';
 
 export default function VideoLibrary() {
   const [videos, setVideos]           = useState([]);
@@ -13,7 +14,7 @@ export default function VideoLibrary() {
   useEffect(() => {
     const fetchVideos = async () => {
       try {
-        const res  = await fetch('cutboard-production.up.railway.app/api/videos');
+        const res  = await fetch(`${API_URL}/api/videos`);
         if (res.ok) {
           const data = await res.json();
           setVideos([...(data.active || []), ...(data.done || [])]);
@@ -31,7 +32,7 @@ export default function VideoLibrary() {
     e.stopPropagation();
     if (!window.confirm('Delete this video? This cannot be undone.')) return;
     try {
-      const res = await fetch(`cutboard-production.up.railway.app/api/videos/${id}`, { method: 'DELETE' });
+      const res = await fetch(`${API_URL}/api/videos/${id}`, { method: 'DELETE' });
       if (res.ok) setVideos((prev) => prev.filter((v) => v.id !== id));
     } catch (err) {
       console.error('Delete failed:', err);

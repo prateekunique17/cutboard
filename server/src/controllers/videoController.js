@@ -125,10 +125,12 @@ export const getVideos = async (req, res) => {
        };
     });
 
-    const active = formattedCards.filter(c => c.status === 'RAW_FOOTAGE' || c.status === 'IN_REVIEW');
-    const done = formattedCards.filter(c => c.status === 'APPROVED');
+    const todo   = formattedCards.filter(c => c.status === 'TODO');
+    const active  = formattedCards.filter(c => c.status === 'RAW_FOOTAGE' || c.status === 'IN_PROGRESS');
+    const review  = formattedCards.filter(c => c.status === 'IN_REVIEW');
+    const done    = formattedCards.filter(c => c.status === 'APPROVED');
 
-    res.status(200).json({ active, done });
+    res.status(200).json({ todo, active, review, done });
   } catch (error) {
     console.error("GET VIDEOS SYSTEM ERROR:", error);
     res.status(500).json({ error: 'Internal system error', details: error.message });
@@ -139,13 +141,15 @@ export const updateVideoStatus = async (req, res) => {
   try {
     const { cardId, status } = req.body;
     
-    // Status now maps to only 2 columns: active and done
+    // Map Kanban column IDs to DB status values
     const dbStatusMap = {
-      active: 'RAW_FOOTAGE', // Or keep current state if it's already IN_REVIEW
-      done: 'APPROVED'
+      todo:   'TODO',
+      active: 'RAW_FOOTAGE',
+      review: 'IN_REVIEW',
+      done:   'APPROVED'
     };
 
-    const dbStatus = dbStatusMap[status];
+    const dbStatus = dbStatusMap[status] || status;
 
     const { error } = await supabase
       .from('card')

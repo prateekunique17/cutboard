@@ -65,7 +65,7 @@ npm run dev
 ## 🚥 Summary of Ports
 
 - **Frontend**: http://localhost:5173 🌐
-- **Backend**: cutboard-production.up.railway.app ⚙️
+- **Backend**: http://localhost:5000 ⚙️
 - **Database**: Managed by Supabase ☁️
 
 ---

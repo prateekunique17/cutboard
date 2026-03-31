@@ -3,8 +3,9 @@ import { useParams } from 'react-router-dom';
 import { Play, Pause, Volume2, Maximize2, MessageSquare, Send, Loader2, Brain, CheckCircle, AlertTriangle, AlertCircle } from 'lucide-react';
 import { io } from 'socket.io-client';
 import { supabase } from '../supabase';
+import { SOCKET_URL } from '../config';
 
-const socket = io('cutboard-production.up.railway.app'); 
+const socket = io(SOCKET_URL); 
 
 export default function ClientReview() {
   const { id: videoId } = useParams();

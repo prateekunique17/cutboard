@@ -14,6 +14,7 @@ import { KanbanItem } from '../components/KanbanItem';
 import UploadModal from '../components/UploadModal';
 import { Loader2, Plus, RefreshCw } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { API_URL } from '../config';
 
 const COLUMNS = ['todo', 'active', 'review', 'done'];
 
@@ -35,7 +36,7 @@ export default function Projects() {
     if (!silent) setLoading(true);
     else setRefreshing(true);
     try {
-      const response = await fetch('cutboard-production.up.railway.app/api/videos');
+      const response = await fetch(`${API_URL}/api/videos`);
       if (response.ok) {
         const data = await response.json();
         const map = (arr) =>
@@ -120,7 +121,7 @@ export default function Projects() {
     } else {
       try {
         const activeItem = items[ac].find((i) => i.id === active.id);
-        const res = await fetch('cutboard-production.up.railway.app/api/videos/status', {
+        const res = await fetch(`${API_URL}/api/videos/status`, {
           method:  'PATCH',
           headers: { 'Content-Type': 'application/json' },
           body:    JSON.stringify({ cardId: activeItem.cardId, status: oc }),
